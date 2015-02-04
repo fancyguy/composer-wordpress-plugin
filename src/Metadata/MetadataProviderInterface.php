@@ -16,16 +16,6 @@ interface MetadataProviderInterface
 {
 
     /**
-     * @return array the metadata configuration
-     */
-    public function getMetadata();
-
-    /**
-     * @param array $metadata the medatada configuration
-     */
-    public function setMetadata($metadata);
-
-    /**
      * @param Composer\Repository\Vcs\VcsDriverInterface $driver
      * @param string $identifier
      * @return array the metadata for the package

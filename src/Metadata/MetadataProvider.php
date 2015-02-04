@@ -15,17 +15,12 @@ use Composer\Repository\Vcs\VcsDriverInterface;
 class MetadataProvider implements MetadataProviderInterface
 {
     protected $metadata;
-    
-    public function getMetadata()
-    {
-        return $this->metadata;
-    }
 
-    public function setMetadata($metadata)
+    public function __construct($metadata)
     {
         $this->metadata = $metadata;
     }
-
+    
     public function getPackageMetadata(VcsDriverInterface $driver, $identifier)
     {
         return $this->getMetadata();

@@ -17,8 +17,9 @@ class FileExistsMetadataProvider extends MetadataProvider implements MetadataPro
 {
     protected $filePath;
     
-    public function __construct($path)
+    public function __construct($metadata, $path)
     {
+        parent::__construct($metadata);
         $this->filePath = $path;
     }
 

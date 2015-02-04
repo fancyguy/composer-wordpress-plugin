@@ -16,8 +16,9 @@ use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryManager;
 use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
-use FancyGuy\Composer\WordPress\Metadata\MetadataProvider;
+use FancyGuy\Composer\WordPress\Metadata\CompositeMetadataProvider;
 use FancyGuy\Composer\WordPress\Metadata\FileExistsMetadataProvider;
+use FancyGuy\Composer\WordPress\Metadata\PluginMetadataProvider;
 
 class WordPressPlugin implements PluginInterface
 {
@@ -54,24 +55,27 @@ class WordPressPlugin implements PluginInterface
     {
         $rm = new RepositoryManager($io, $composer->getConfig(), $composer->getEventDispatcher());
         $this->setDefaultRepositoryClasses($rm);
-        return $this->getRepositories($rm);
+	return $this->getRepositories($rm, $io);
     }
 
     private function getDefaultMetadataProvider()
     {
-        $coreProvider = new FileExistsMetadataProvider('wp-blog-header.php');
-        $coreProvider->setMetadata(array(
+	$coreProvider = new FileExistsMetadataProvider(array(
             'name' => 'wordpress/wordpress',
             'description' => 'WordPress is web software you can use to create a beautiful website or blog.',
             'type' => CoreInstaller::PACKAGE_TYPE,
+	), 'wp-blog-header.php');
+
+	$pluginProvider = new PluginMetadataProvider(array(
+	    'type' => 'wordpress-plugin'
         ));
 
-        $provider = $coreProvider;
+	$provider = new CompositeMetadataProvider(array($coreProvider, $pluginProvider));
         
         return $provider;
     }
 
-    private function getRepositories(RepositoryManager $rm)
+    private function getRepositories(RepositoryManager $rm, IOInterface $io)
     {
         $repoUrls = array(
             'http://core.svn.wordpress.org',
@@ -85,6 +89,25 @@ class WordPressPlugin implements PluginInterface
         }
         
         return $repositories;
+    }
+
+    private function getChildRepos($url, IOInterface $io)
+    {
+	$repositories = array();
+
+	$processExecutor = new ProcessExecutor($io);
+	$exit = $processExecutor->execute(
+	    "svn ls {$url}",
+	    $output
+	);
+
+	if (0 === $exit) {
+	    foreach ($processExecutor->splitLines($output) as $repo) {
+		$repositories[] = sprintf('%s/%s', trim($url, '/'), $repo);
+	    }
+	}
+
+	return $repositories;
     }
 
     private function setDefaultRepositoryClasses(RepositoryManager $rm)

@@ -73,7 +73,7 @@ class SvnDriver extends Driver implements MetadataAware, FileProbingVcsDriver
             if (!$this->metadataProvider->supports($this, $identifier)) {
                 return;
             }
-            $metadata = $this->metadataProvider->getMetadata($this, $identifier);
+	    $metadata = $this->metadataProvider->getPackageMetadata($this, $identifier);
 
             if (empty($metadata['time'])) {
                 list($path, $rev) = $this->parseIdentifier($identifier);
