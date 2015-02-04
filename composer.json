@@ -25,7 +25,7 @@
         "psr-4": { "FancyGuy\\Composer\\WordPress\\": "src/" }
     },
     "autoload-dev": {
-        "psr-4": { "FancyGuy\\Composer\\WordPress\\Test": "tests/" }
+        "psr-4": { "FancyGuy\\Composer\\WordPress\\Test\\": "tests/" }
     },
     "require-dev": {
         "composer/composer": "1.0.x-dev",
