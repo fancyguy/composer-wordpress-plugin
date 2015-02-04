@@ -15,6 +15,7 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryManager;
+use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
 use FancyGuy\Composer\WordPress\Metadata\MetadataProvider;
 use FancyGuy\Composer\WordPress\Metadata\FileExistsMetadataProvider;
 
@@ -44,6 +45,9 @@ class WordPressPlugin implements PluginInterface
         $this->metadataProvider = $this->getDefaultMetadataProvider();
         $repo = new CompositeRepository($this->getWordPressRepositories($composer, $io));
         $composer->getRepositoryManager()->addRepository($repo);
+
+        $im = $composer->getInstallationManager();
+        $im->addInstaller(new CoreInstaller($io, $composer, $this));
     }
 
     private function getWordPressRepositories(Composer $composer, IOInterface $io)
@@ -59,7 +63,7 @@ class WordPressPlugin implements PluginInterface
         $coreProvider->setMetadata(array(
             'name' => 'wordpress/wordpress',
             'description' => 'WordPress is web software you can use to create a beautiful website or blog.',
-            'type' => 'wordpress-core'
+            'type' => CoreInstaller::PACKAGE_TYPE,
         ));
 
         $provider = $coreProvider;

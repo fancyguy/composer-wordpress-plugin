@@ -15,16 +15,16 @@ use Composer\Package\PackageInterface;
 class Config
 {
 
-    private $repositories;
+    private $webroot;
 
-    public function getRepositories()
+    public function getWebroot()
     {
-        return $this->repositories;
+        return $this->webroot;
     }
 
-    public function setRepositories(array $repositories)
+    public function setWebroot($webroot)
     {
-        $this->repositories = $repositories;
+        $this->webroot = $webroot;
     }
     
     public static function createFromPackage(PackageInterface $package)
@@ -33,15 +33,13 @@ class Config
         
         $extra = $package->getExtra();
 
-        $repositories = static::extractConfigSetting('repositories', $extra);
-
-        $config->setRepositories($repositories);
+        $config->setWebroot(static::extractConfigSetting('webroot', $extra, 'wordpress'));
         
         return $config;
     }
 
-    protected static function extractConfigSetting($setting, array $extra)
+    protected static function extractConfigSetting($setting, array $extra, $default = null)
     {
-        return array_key_exists('wordpress', $extra) && array_key_exists($setting, $extra['wordpress']) ? $extra['wordpress'][$setting] : array();
+        return array_key_exists('wordpress', $extra) && array_key_exists($setting, $extra['wordpress']) ? $extra['wordpress'][$setting] : $default;
     }
 }
