@@ -1,0 +1,5 @@
+((nil . ((project-name . "FancyGuy WordPress Composer Plugin")))
+ (php-mode . ((source-path . "src/")
+	      (source-namespace . "FancyGuy\\Composer\\WordPress")
+	      (tests-path . "tests/")
+	      (tests-namespace . "FancyGuy\\Composer\\WordPress\\Test"))))

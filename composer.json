@@ -1,0 +1,36 @@
+{
+    "name": "fancyguy/composer-wordpress-plugin",
+    "description": "WordPress installer for Composer",
+    "keywords": ["composer", "installer", "WordPress", "plugin", "theme"],
+    "homepage": "https://github.com/fancyguy/composer-wordpress-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Steve Buzonas",
+            "email": "steve@fancyguy.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/fancyguy/composer-wordpress-plugin/issues"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "composer-plugin-api": "1.0.0"
+    },
+    "autoload": {
+        "psr-4": { "FancyGuy\\Composer\\WordPress\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "FancyGuy\\Composer\\WordPress\\Test": "tests/" }
+    },
+    "require-dev": {
+        "composer/composer": "1.0.x-dev",
+        "phpunit/phpunit": "~4.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
