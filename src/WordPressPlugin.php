@@ -18,7 +18,6 @@ use Composer\Repository\RepositoryManager;
 use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
 use FancyGuy\Composer\WordPress\Metadata\CompositeMetadataProvider;
 use FancyGuy\Composer\WordPress\Metadata\FileExistsMetadataProvider;
-use FancyGuy\Composer\WordPress\Metadata\PluginMetadataProvider;
 
 class WordPressPlugin implements PluginInterface
 {
@@ -66,11 +65,7 @@ class WordPressPlugin implements PluginInterface
             'type' => CoreInstaller::PACKAGE_TYPE,
 	), 'wp-blog-header.php');
 
-	$pluginProvider = new PluginMetadataProvider(array(
-	    'type' => 'wordpress-plugin'
-        ));
-
-	$provider = new CompositeMetadataProvider(array($coreProvider, $pluginProvider));
+	$provider = new CompositeMetadataProvider(array($coreProvider));
         
         return $provider;
     }
