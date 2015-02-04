@@ -1,5 +1,6 @@
 {
     "name": "fancyguy/composer-wordpress-plugin",
+    "type": "composer-plugin",
     "description": "WordPress installer for Composer",
     "keywords": ["composer", "installer", "WordPress", "plugin", "theme"],
     "homepage": "https://github.com/fancyguy/composer-wordpress-plugin",
