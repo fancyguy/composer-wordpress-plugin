@@ -13,6 +13,9 @@
     "support": {
         "issues": "https://github.com/fancyguy/composer-wordpress-plugin/issues"
     },
+    "conflict": {
+        "composer/installers": "*"
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
