@@ -25,7 +25,6 @@ class VcsRepository extends BaseRepository implements MetadataAware
     {
         $drivers = $drivers ?: array(
             'wordpress-core' => 'FancyGuy\Composer\WordPress\Repository\Vcs\WordPressCoreSvnDriver',
-            //            'wordpress-ext'  => 'FancyGuy\Composer\WordPress\Repository\Vcs\WordPressExtensionSvnDriver',
             'svn'            => 'FancyGuy\Composer\WordPress\Repository\Vcs\SvnDriver',
         );
 

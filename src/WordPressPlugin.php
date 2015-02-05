@@ -15,6 +15,7 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryManager;
+use FancyGuy\Composer\WordPress\Repository\WordPressThemeRepository;
 use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
 use FancyGuy\Composer\WordPress\Metadata\CompositeMetadataProvider;
 use FancyGuy\Composer\WordPress\Metadata\FileExistsMetadataProvider;
@@ -42,8 +43,10 @@ class WordPressPlugin implements PluginInterface
         if ($package = $composer->getPackage()) {
             $this->setConfig(Config::createFromPackage($package));
         }
-        $this->metadataProvider = $this->getDefaultMetadataProvider();
-        $repo = new CompositeRepository($this->getWordPressRepositories($composer, $io));
+        // $this->metadataProvider = $this->getDefaultMetadataProvider();
+        // $repo = new CompositeRepository($this->getWordPressRepositories($composer, $io));
+        // $composer->getRepositoryManager()->addRepository($repo);
+        $repo = new WordPressThemeRepository($io, $composer->getConfig());
         $composer->getRepositoryManager()->addRepository($repo);
 
         $im = $composer->getInstallationManager();
@@ -72,13 +75,15 @@ class WordPressPlugin implements PluginInterface
 
     private function getRepositories(RepositoryManager $rm, IOInterface $io)
     {
-        $repoUrls = array(
-            'http://core.svn.wordpress.org',
+        $repos = array(
+            array('type' => 'wordpress', 'config' => array('url' => 'http://core.svn.wordpress.org')),
+            //            array('type' => 'wp-theme', 'config' => array('url' => 'http://themes.svn.wordpress.org')),
+
         );
         
         $repositories = array();
-        foreach ($repoUrls as $repo) {
-            $r = $rm->createRepository('wordpress', array('url' => $repo));
+        foreach ($repos as $repo) {
+            $r = $rm->createRepository($repo['type'], $repo['config']);
             $r->setMetadataProvider($this->metadataProvider);
             $repositories[] = $r;
         }
@@ -86,28 +91,10 @@ class WordPressPlugin implements PluginInterface
         return $repositories;
     }
 
-    private function getChildRepos($url, IOInterface $io)
-    {
-	$repositories = array();
-
-	$processExecutor = new ProcessExecutor($io);
-	$exit = $processExecutor->execute(
-	    "svn ls {$url}",
-	    $output
-	);
-
-	if (0 === $exit) {
-	    foreach ($processExecutor->splitLines($output) as $repo) {
-		$repositories[] = sprintf('%s/%s', trim($url, '/'), $repo);
-	    }
-	}
-
-	return $repositories;
-    }
-
     private function setDefaultRepositoryClasses(RepositoryManager $rm)
     {
         $rm->setRepositoryClass('wordpress', 'FancyGuy\Composer\WordPress\Repository\VcsRepository');
+        //        $rm->setRepositoryClass('wp-theme', 'FancyGuy\Composer\WordPress\Repository\ThemeRepository');
         $rm->setRepositoryClass('svn', 'FancyGuy\Composer\WordPress\Repository\VcsRepository');
     }
 }

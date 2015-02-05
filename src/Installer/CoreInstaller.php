@@ -14,8 +14,8 @@ use Composer\Composer;
 use Composer\Installer\LibraryInstaller;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
+use Composer\Plugin\PluginInterface;
 use Composer\Util\Filesystem;
-use FancyGuy\Composer\WordPress\WordPressPlugin;
 
 class CoreInstaller extends LibraryInstaller
 {
@@ -23,7 +23,7 @@ class CoreInstaller extends LibraryInstaller
 
     private $wordpressPlugin;
 
-    public function __construct(IOInterface $io, Composer $composer, WordPressPlugin $plugin, Filesystem $filesystem = null)
+    public function __construct(IOInterface $io, Composer $composer, PluginInterface $plugin, Filesystem $filesystem = null)
     {
         $this->wordpressPlugin = $plugin;
         parent::__construct($io, $composer, self::PACKAGE_TYPE, $filesystem);

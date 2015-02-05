@@ -23,7 +23,7 @@ class MetadataProvider implements MetadataProviderInterface
     
     public function getPackageMetadata(VcsDriverInterface $driver, $identifier)
     {
-        return $this->getMetadata();
+        return $this->metadata;
     }
     
     public function supports(VcsDriverInterface $driver, $identifier)
