@@ -36,7 +36,7 @@ class Cache extends BaseCache
     public function write($file, $contents)
     {
         $absPath = $this->getRoot() . $file;
-        if ($this->isEnabled() && !is_dir(dirname($$absPath))) {
+        if ($this->isEnabled() && !is_dir(dirname($absPath))) {
             @mkdir(dirname($absPath), 0777, true);
         }
         parent::write($file, $contents);
