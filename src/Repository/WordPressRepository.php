@@ -63,8 +63,6 @@ abstract class WordPressRepository extends LazyPackageRepository
             $this->packageCache[$name][] = $package;
         }
 
-        var_dump(array_keys($this->packageCache));
-
         return $this->packageCache[$name];
     }
 

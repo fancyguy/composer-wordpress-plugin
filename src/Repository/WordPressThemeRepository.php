@@ -28,7 +28,6 @@ class WordPressThemeRepository extends WordPressRepository
 
     protected function providesPackage($name)
     {
-        var_dump($name);
         if (0 !== strpos($name, $this->vendor)) {
             return false;
         }
@@ -39,16 +38,10 @@ class WordPressThemeRepository extends WordPressRepository
         return false;
     }
 
-    protected function getComposerInformation($package, $identifier)
-    {
-
-    }
-
     protected function loadPackage($name)
     {
-        if (!$this->infoCache[$name]) {
+        if (!isset($this->infoCache[$name])) {
             $cacheFile = preg_replace('{[^a-z0-9.]}i', '-', $name.'.json');
-            var_dump($cacheFile);
             if ($res = $this->cache->read($cacheFile)) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {
@@ -70,7 +63,6 @@ class WordPressThemeRepository extends WordPressRepository
                 $this->cache->write($cacheFile, json_encode($this->infoCache[$name]));
             }
         }
-        var_dump($this->infoCache);
         return $this->infoCache[$name];
     }
 
