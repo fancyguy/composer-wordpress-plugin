@@ -46,7 +46,7 @@ class WordPressPluginRepository extends WordPressRepository
     protected function loadPackage($name)
     {
         if (!isset($this->infoCache[$name])) {
-            $cacheFile = preg_replace('{[^a-z0-9.]}i', '-', $name.'.json');
+            $cacheFile = preg_replace('{[^a-z0-9./]}i', '-', $name.'.json');
             if ($res = $this->cache->read($cacheFile)) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {

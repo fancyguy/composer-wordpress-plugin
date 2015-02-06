@@ -26,8 +26,8 @@ use FancyGuy\Composer\WordPress\Util\SPDXLicense as LicenseUtil;
 abstract class WordPressRepository extends LazyPackageRepository
 {
 
-    const THEME_VENDOR = 'wp-theme';
-    const PLUGIN_VENDOR = 'wp-plugin';
+    const THEME_VENDOR = 'wordpress-theme';
+    const PLUGIN_VENDOR = 'wordpress-plugin';
 
     protected $driver;
     protected $infoCache;
