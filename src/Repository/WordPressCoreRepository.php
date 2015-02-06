@@ -14,31 +14,24 @@ use Composer\Config;
 use Composer\Event\EventDispatcher;
 use Composer\IO\IOInterface;
 use Composer\Repository\Vcs\VcsDriverInterface;
-use FancyGuy\Composer\WordPress\Installer\ThemeInstaller;
+use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
 
-class WordPressPluginRepository extends WordPressRepository
+class WordPressCoreRepository extends WordPressRepository
 {
     
     public function __construct(IOInterface $io, Config $config, EventDispatcher $eventDispatcher = null)
     {
-        parent::__construct($io, $config, WordPressRepository::PLUGIN_VENDOR, 'wp-plugin', $eventDispatcher);
+        parent::__construct($io, $config, 'wordpress', CoreInstaller::PACKAGE_TYPE, $eventDispatcher);
     }
 
     protected function getBaseUrl()
     {
-        return 'http://plugins.svn.wordpress.org';
+        return 'http://core.svn.wordpress.org';
     }
 
     protected function providesPackage($name)
     {
-        if (0 !== strpos($name, $this->vendor)) {
-            return false;
-        }
-        try {
-            return (bool) $this->loadPackage($name);
-        } catch (\Exception $e) {
-        }
-        return false;
+        return 'wordpress/wordpress' === $name;
     }
 
     protected function loadPackage($name)
@@ -48,29 +41,24 @@ class WordPressPluginRepository extends WordPressRepository
             if ($res = $this->cache->read($cacheFile)) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {
-                $this->infoCache[$name] = $this->loadVersions($this->getDriver($this->getBaseUrl().'/'.$this->getPackageShortName($name)), $name);
+                try {
+                $this->infoCache[$name] = $this->loadVersions($this->getDriver($this->getBaseUrl()), $name);
+                } catch (\Exception $e) { var_dump($e->getMessage()); exit; }
                 $this->cache->write($cacheFile, json_encode($this->infoCache[$name]));
             }
         }
         return $this->infoCache[$name];
     }
 
-    /**
-     * @TODO scan the files in the root of the directory to get the remaining metadata
-     */
     protected function getComposerMetadata(VcsDriverInterface $driver, $data)
     {
+        $data['description'] = 'WordPress is web software you can use to create a beautiful website or blog.';
         if ('dev-' !== substr($data['version'], 0, 4) && '-dev' !== substr($data['version'], -4)) {
             $data['dist'] = array(
                 'type' => 'zip',
-                'url'  => sprintf('https://downloads.wordpress.org/plugin/%s.%s.zip',
-                                  $this->getPackageShortName($data['name']),
-                                  $data['version']),
+                'url'  => sprintf('https://downloads.wordpress.org/wordpress-%s.zip', $data['version']),
             );
         }
-        
-        //        $headers = $this->extractHeaderFields($url.'/style.css');
-        //        $metadata = array_merge($metadata, $this->translateStandardHeaders($headers));
 
         return $data;
     }
