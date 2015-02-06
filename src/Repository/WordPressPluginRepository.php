@@ -111,6 +111,10 @@ class WordPressPluginRepository extends WordPressRepository
 
                     $packages[] = $this->getComposerMetadata($driver, $data, $identifier);
                 }
+                if (!$this->io->isVerbose()) {
+                    $this->io->overwrite('');
+                }
+                $driver->cleanup();
                 $this->infoCache[$name] = $packages;
                 $this->cache->write($cacheFile, json_encode($this->infoCache[$name]));
             }
@@ -129,7 +133,7 @@ class WordPressPluginRepository extends WordPressRepository
         if ('dev-' !== substr($data['version'], 0, 4) && '-dev' !== substr($data['version'], -4)) {
             $data['dist'] = array(
                 'type' => 'zip',
-                'url'  => sprintf('https://downloads.wordpress.org/theme/%s.%s.zip',
+                'url'  => sprintf('https://downloads.wordpress.org/plugin/%s.%s.zip',
                                   $this->getPackageShortName($data['name']),
                                   $data['version']),
             );
