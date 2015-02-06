@@ -15,6 +15,7 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryManager;
+use FancyGuy\Composer\WordPress\Repository\WordPressPluginRepository;
 use FancyGuy\Composer\WordPress\Repository\WordPressThemeRepository;
 use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
 use FancyGuy\Composer\WordPress\Installer\ThemeInstaller;
@@ -48,6 +49,7 @@ class WordPressPlugin implements PluginInterface
         // $composer->getRepositoryManager()->addRepository($repo);
         $repo = new CompositeRepository(array(
             new WordPressThemeRepository($io, $composer->getConfig()),
+            new WordPressPluginRepository($io, $composer->getConfig()),
         ));
         $composer->getRepositoryManager()->addRepository($repo);
 

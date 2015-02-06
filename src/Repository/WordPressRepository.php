@@ -27,6 +27,7 @@ abstract class WordPressRepository extends LazyPackageRepository
 {
 
     const THEME_VENDOR = 'wp-theme';
+    const PLUGIN_VENDOR = 'wp-plugin';
 
     protected $driver;
     protected $infoCache;
@@ -174,15 +175,17 @@ abstract class WordPressRepository extends LazyPackageRepository
         return $metadata;
     }
 
-    protected function getDriver()
+    protected function getDriver($url = null)
     {
-        if (null === $this->driver) {
-            $this->driver = new SvnDriver(array(
-                'type' => 'svn',
-                'url' => $this->getBaseUrl(),
-            ), $this->io, $this->config, $this->process);
-        }
-        return $this->driver;
+        $url = $url ?: $this->getBaseUrl();
+        
+        $driver = new SvnDriver(array(
+            'type' => 'svn',
+            'url' => $url,
+        ), $this->io, $this->config, $this->process);
+        $driver->initialize();
+        
+        return $driver;
     }
 
     /**
