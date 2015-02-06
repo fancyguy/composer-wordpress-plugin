@@ -42,14 +42,14 @@ class WordPressThemeRepository extends WordPressRepository
     protected function loadPackage($name)
     {
         if (!isset($this->infoCache[$name])) {
-            $cacheFile = preg_replace('{[^a-z0-9./]}i', '-', $name.'.json');
-            if ($res = $this->cache->read($cacheFile)) {
+            $packageUrl = sprintf('%s/%s',
+                                  $this->getBaseUrl(),
+                                  $this->getPackageShortName($name)
+            );
+            $cacheFile = $name.'.json';
+            if ($res = $this->cache->read($cacheFile, $this->getModifiedTimestamp($packageUrl))) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {
-                $packageUrl = sprintf('%s/%s',
-                                      $this->getBaseUrl(),
-                                      $this->getPackageShortName($name)
-                );
                 $versions = array();
                 foreach ($this->executeLines('svn ls', $packageUrl) as $version) {
                     if (preg_match('{(.*)/}', $version, $match)) {

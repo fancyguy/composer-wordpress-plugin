@@ -10,7 +10,6 @@
 
 namespace FancyGuy\Composer\WordPress\Repository;
 
-use Composer\Cache;
 use Composer\Config;
 use Composer\DependencyResolver\Pool;
 use Composer\Event\EventDispatcher;
@@ -23,6 +22,7 @@ use Composer\Repository\Vcs\VcsDriverInterface;
 use Composer\Util\Filesystem;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\Svn as SvnUtil;
+use FancyGuy\Composer\WordPress\Util\Cache;
 use FancyGuy\Composer\WordPress\Util\SPDXLicense as LicenseUtil;
 
 abstract class WordPressRepository extends LazyPackageRepository
@@ -43,7 +43,7 @@ abstract class WordPressRepository extends LazyPackageRepository
     public function __construct(IOInterface $io, Config $config, $vendor, $packageType, EventDispatcher $eventDispatcher = null)
     {
         parent::__construct($io, $config, $eventDispatcher);
-        $this->cache = new Cache($this->io, $this->config->get('cache-repo-dir').'/wordpress');
+        $this->cache = new Cache($this->io, $this->config->get('cache-repo-dir').'/wordpress', 'a-z0-9./');
         $this->vendor = $vendor;
         $this->process = new ProcessExecutor($io);
         $this->loader = new ArrayLoader();

@@ -37,13 +37,11 @@ class WordPressCoreRepository extends WordPressRepository
     protected function loadPackage($name)
     {
         if (!isset($this->infoCache[$name])) {
-            $cacheFile = preg_replace('{[^a-z0-9.]}i', '-', $name.'.json');
-            if ($res = $this->cache->read($cacheFile)) {
+            $cacheFile = 'wordpress.json';
+            if ($res = $this->cache->read($cacheFile, $this->getModifiedTimestamp($this->getBaseUrl()))) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {
-                try {
                 $this->infoCache[$name] = $this->loadVersions($this->getDriver($this->getBaseUrl()), $name);
-                } catch (\Exception $e) { var_dump($e->getMessage()); exit; }
                 $this->cache->write($cacheFile, json_encode($this->infoCache[$name]));
             }
         }
