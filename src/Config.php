@@ -16,6 +16,8 @@ class Config
 {
 
     private $webroot;
+    private $themePath;
+    private $pluginPath;
 
     public function getWebroot()
     {
@@ -26,6 +28,16 @@ class Config
     {
         $this->webroot = $webroot;
     }
+
+    public function getThemePath()
+    {
+        return $this->themePath;
+    }
+
+    public function setThemePath($path)
+    {
+        $this->themePath = $path;
+    }
     
     public static function createFromPackage(PackageInterface $package)
     {
@@ -34,6 +46,7 @@ class Config
         $extra = $package->getExtra();
 
         $config->setWebroot(static::extractConfigSetting('webroot', $extra, 'wordpress'));
+        $config->setThemePath(static::extractConfigSetting('themes-path', $extra, $config->getWebroot().'/wp-content/themes'));
         
         return $config;
     }

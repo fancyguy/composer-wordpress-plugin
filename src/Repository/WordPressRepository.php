@@ -21,6 +21,7 @@ use Composer\Repository\Vcs\SvnDriver;
 use Composer\Util\Filesystem;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\Svn as SvnUtil;
+use FancyGuy\Composer\WordPress\Util\SPDXLicense as LicenseUtil;
 
 abstract class WordPressRepository extends LazyPackageRepository
 {
@@ -75,6 +76,24 @@ abstract class WordPressRepository extends LazyPackageRepository
     }
 
     /**
+     * @return array key value set of header fields
+     */
+    public function getStandardHeaderFields()
+    {
+        return array(
+            'themename'   => 'Theme Name',
+            'themeuri'    => 'Theme URI',
+            'pluginname'  => 'Plugin Name',
+            'pluginuri'   => 'Plugin URI',
+            'author'      => 'Author',
+            'authoruri'   => 'Author URI',
+            'description' => 'Description',
+            'license'     => 'License',
+            'tags'        => 'Tags',
+        );
+    }
+
+    /**
      * @param string $name
      * @return boolean
      */
@@ -88,6 +107,71 @@ abstract class WordPressRepository extends LazyPackageRepository
     protected function getPackageShortName($name)
     {
         return str_replace($this->vendor.'/', '', $name);
+    }
+
+    protected function translateStandardHeaders($headers)
+    {
+        $metadata = array();
+        if (isset($headers['description'])) {
+            $metadata['description'] = $headers['description'];
+        }
+
+        if (isset($headers['themeuri'])) {
+            $metadata['homepage'] = $headers['themeuri'];
+        } elseif (isset($headers['pluginuri'])) {
+            $metadata['homepage'] = $headers['pluginuri'];
+        }
+
+        $author = array();
+        if (isset($headers['author'])) {
+            $author['name'] = $headers['author'];
+        }
+        if (isset($headers['authoruri'])) {
+            $author['homepage'] = $headers['authoruri'];
+        }
+        if (!empty($author)) {
+            $metadata['authors'] = array($author);
+        }
+
+        if (isset($headers['license'])) {
+            try {
+                if (array_key_exists($headers['license'], LicenseUtil::getLicenses())) {
+                    $metadata['license'] = $headers['license'];
+                } elseif ($license = LicenseUtil::getIdentifierFromName($headers['license'])) {
+                    $metadata['license'] = $license;
+                }
+            } catch (\Exception $e) {
+            }
+        }
+
+        if (isset($headers['tags'])) {
+            $metadata['keywords'] = array_map('trim', explode(',', $headers['tags']));
+        }
+
+        return $metadata;
+    }
+
+    protected function extractHeaderFields($url, $fields = null, $scanLength = 30)
+    {
+        $fields = $fields ?: $this->getStandardHeaderFields();
+        
+        $lineCount = 0;
+        $metadata = array();
+        foreach ($this->executeLines('svn cat', $url) as $line) {
+            if ($line && preg_match('{^('.implode('|', $fields).'):(.+)$}', $line, $match)) {
+                $field = array_search($match[1], $fields);
+                $value = $match[2];
+                $metadata[$field] = trim($value);
+                if (empty(array_diff(array_keys($fields), array_keys($metadata)))) {
+                    break;
+                }
+            }
+            if ($lineCount++ > $scanLength) {
+                break;
+            }
+        }
+
+        return $metadata;
     }
 
     protected function getDriver()

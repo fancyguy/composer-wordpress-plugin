@@ -13,6 +13,7 @@ namespace FancyGuy\Composer\WordPress\Repository;
 use Composer\Config;
 use Composer\Event\EventDispatcher;
 use Composer\IO\IOInterface;
+use FancyGuy\Composer\WordPress\Installer\ThemeInstaller;
 
 class WordPressThemeRepository extends WordPressRepository
 {
@@ -100,18 +101,20 @@ class WordPressThemeRepository extends WordPressRepository
                 break;
             }
         }
-        
-        return array(
+
+        $metadata = array(
             'name'        => $name,
             'version'     => $version,
-            'type'        => 'wp-theme',
+            'type'        => ThemeInstaller::PACKAGE_TYPE,
             'source'      => $source,
             'dist'        => $dist,
             'time'        => $time,
-            //            'description' => $description,
-            //            'authors'     => $authors,
-            //            'keywords'    => $keywords,
         );
+        
+        $headers = $this->extractHeaderFields($url.'/style.css');
+        $metadata = array_merge($metadata, $this->translateStandardHeaders($headers));
+
+        return $metadata;
     }
 
 }

@@ -17,6 +17,7 @@ use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryManager;
 use FancyGuy\Composer\WordPress\Repository\WordPressThemeRepository;
 use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
+use FancyGuy\Composer\WordPress\Installer\ThemeInstaller;
 use FancyGuy\Composer\WordPress\Metadata\CompositeMetadataProvider;
 use FancyGuy\Composer\WordPress\Metadata\FileExistsMetadataProvider;
 
@@ -43,14 +44,16 @@ class WordPressPlugin implements PluginInterface
         if ($package = $composer->getPackage()) {
             $this->setConfig(Config::createFromPackage($package));
         }
-        // $this->metadataProvider = $this->getDefaultMetadataProvider();
         // $repo = new CompositeRepository($this->getWordPressRepositories($composer, $io));
         // $composer->getRepositoryManager()->addRepository($repo);
-        $repo = new WordPressThemeRepository($io, $composer->getConfig());
+        $repo = new CompositeRepository(array(
+            new WordPressThemeRepository($io, $composer->getConfig()),
+        ));
         $composer->getRepositoryManager()->addRepository($repo);
 
         $im = $composer->getInstallationManager();
         $im->addInstaller(new CoreInstaller($io, $composer, $this));
+        $im->addInstaller(new ThemeInstaller($io, $composer, $this));
     }
 
     private function getWordPressRepositories(Composer $composer, IOInterface $io)
