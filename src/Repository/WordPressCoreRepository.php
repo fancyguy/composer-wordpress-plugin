@@ -54,7 +54,7 @@ class WordPressCoreRepository extends WordPressRepository
         if ('dev-' !== substr($data['version'], 0, 4) && '-dev' !== substr($data['version'], -4)) {
             $data['dist'] = array(
                 'type' => 'zip',
-                'url'  => sprintf('https://downloads.wordpress.org/wordpress-%s.zip', $data['version']),
+                'url'  => sprintf('http://wordpress.org/wordpress-%s.zip', $data['version']),
             );
         }
 
