@@ -81,8 +81,16 @@ class CoreInstaller extends LibraryInstaller
             foreach($db as $field => $value) {
                 $replacements['{{db.'.$field.'}}'] = $value;
             }
-            $replacements['{{webroot}}'] = $this->filesystem->findShortestPath(dirname($configPath), realpath('.').'/'.$this->wordpressPlugin->getConfig()->getWebroot());
-            $replacements['{{salt_path}}'] = $this->filesystem->findShortestPath(dirname($configPath), $this->getSaltPath());
+            $root = realpath('.').'/';
+            $paths = array(
+                'webroot' => $root.$this->wordpressPlugin->getConfig()->getWebroot(),
+                'salt_path' => $this->getSaltPath(),
+                'content_dir' => $root.$this->wordpressPlugin->getConfig()->getContentPath(),
+                'plugin_dir' => $root.$this->wordpressPlugin->getConfig()->getPluginPath(),
+            );
+            foreach ($paths as $name => $path) {
+                $replacements['{{'.$name.'}}'] = $this->filesystem->findShortestPath(dirname($configPath), $path);
+            }
             $replacements['{{table_prefix}}'] = $this->wordpressPlugin->getConfig()->getTablePrefix();
             
             $config = file_get_contents(__DIR__.'/../../res/wp-config.php.template');
