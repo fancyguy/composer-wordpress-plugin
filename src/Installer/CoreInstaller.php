@@ -15,6 +15,7 @@ use Composer\Installer\LibraryInstaller;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
+use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Util\Filesystem;
 
 class CoreInstaller extends LibraryInstaller
