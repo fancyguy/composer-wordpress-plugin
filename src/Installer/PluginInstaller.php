@@ -19,7 +19,7 @@ use Composer\Util\Filesystem;
 
 class PluginInstaller extends LibraryInstaller
 {
-    const PACKAGE_TYPE = 'wordpress-theme';
+    const PACKAGE_TYPE = 'wordpress-plugin';
 
     private $wordpressPlugin;
 
