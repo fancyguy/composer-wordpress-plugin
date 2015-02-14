@@ -44,4 +44,36 @@ class CoreInstaller extends LibraryInstaller
     {
         return $packageType === $this->type;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
+    {
+        parent::install($repo, $package);
+        $this->createSaltSeed();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function update(InstalledRepositoryInterface $repo, PackageInterface $initial, PackageInterface $target)
+    {
+        parent::update($repo, $initial, $target);
+        $this->createSaltSeed();
+    }
+
+    private function getSaltPath()
+    {
+        return ($this->vendorDir ? $this->vendorDir.'/' : '') . 'wordpress-salts.php';
+    }
+
+    private function createSaltSeed()
+    {
+        $saltPath = $this->getSaltPath();
+        if (!file_exists($saltPath)) {
+            $salts = '<?php' . PHP_EOL . file_get_contents(self::SALT_API_URL);
+            file_put_contents($saltPath, $salts);
+        }
+    }
 }
