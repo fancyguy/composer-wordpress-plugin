@@ -115,6 +115,7 @@ abstract class WordPressRepository extends LazyPackageRepository
     protected function loadVersions(VcsDriverInterface $driver, $package)
     {
         $packages = array_merge(
+            $this->loadVcsVersions($driver, $package, $driver->getRootIdentifier(), 'root'),
             $this->loadVcsVersions($driver, $package, $driver->getTags(), 'tag'),
             $this->loadVcsVersions($driver, $package, $driver->getBranches(), 'branch')
         );
