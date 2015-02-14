@@ -21,6 +21,7 @@ use Composer\Util\Filesystem;
 class CoreInstaller extends LibraryInstaller
 {
     const PACKAGE_TYPE = 'wordpress-core';
+    const SALT_API_URL = 'https://api.wordpress.org/secret-key/1.1/salt/';
 
     private $wordpressPlugin;
 
