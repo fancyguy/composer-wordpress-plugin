@@ -54,6 +54,7 @@ class CoreInstaller extends LibraryInstaller
     {
         parent::install($repo, $package);
         $this->createSaltSeed();
+        $this->createWpConfig();
     }
 
     /**
@@ -63,6 +64,31 @@ class CoreInstaller extends LibraryInstaller
     {
         parent::update($repo, $initial, $target);
         $this->createSaltSeed();
+        $this->createWpConfig();
+    }
+
+    private function createWpConfig()
+    {
+        $configPath = realpath(dirname($this->wordpressPlugin->getConfig()->getWebroot())).'/wp-config.php';
+        if (!file_exists($configPath)) {
+            $db['name']     = $this->ask('The name of the database for WordPress', 'wordpress');
+            $db['user']     = $this->ask('Database username', 'wordpress');
+            $db['password'] = $this->ask('Database password', 'wordpress');
+            $db['host']     = $this->ask('Database Hostname', 'localhost');
+            $db['charset']  = $this->ask('Database Charset', 'utf8');
+            $db['collate']  = $this->ask("Database Collation (Don't set this if in doubt)");
+
+            foreach($db as $field => $value) {
+                $replacements['{{db.'.$field.'}}'] = $value;
+            }
+            $replacements['{{webroot}}'] = $this->filesystem->findShortestPath(dirname($configPath), realpath('.').'/'.$this->wordpressPlugin->getConfig()->getWebroot());
+            $replacements['{{salt_path}}'] = $this->filesystem->findShortestPath(dirname($configPath), $this->getSaltPath());
+            $replacements['{{table_prefix}}'] = $this->wordpressPlugin->getConfig()->getTablePrefix();
+            
+            $config = file_get_contents(__DIR__.'/../../res/wp-config.php.template');
+            $config = str_replace(array_keys($replacements), array_values($replacements), $config);
+            file_put_contents($configPath, $config);
+        }
     }
 
     private function getSaltPath()
@@ -77,5 +103,13 @@ class CoreInstaller extends LibraryInstaller
             $salts = '<?php' . PHP_EOL . file_get_contents(self::SALT_API_URL);
             file_put_contents($saltPath, $salts);
         }
+    }
+    
+    private function ask($question, $default = null)
+    {
+        $question = '<info>'.$question.'</info>';
+        $question .= $default ? ' [<comment>'.$default.'</comment>]: ' : ': ';
+
+        return $this->io->ask($question, $default);
     }
 }

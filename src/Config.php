@@ -19,6 +19,7 @@ class Config
     private $contentPath;
     private $themePath;
     private $pluginPath;
+    private $tablePrefix;
 
     public function getWebroot()
     {
@@ -40,6 +41,11 @@ class Config
         return $this->contentPath;
     }
 
+    public function getTablePrefix()
+    {
+        return $this->tablePrefix;
+    }
+
     public function setContentPath($path)
     {
         $this->contentPath = $path;
@@ -59,6 +65,11 @@ class Config
     {
         $this->pluginPath = $path;
     }
+
+    public function setTablePrefix($prefix)
+    {
+        $this->tablePrefix = $prefix;
+    }
     
     public static function createFromPackage(PackageInterface $package)
     {
@@ -70,6 +81,7 @@ class Config
         $config->setContentPath(static::extractConfigSetting('content-path', $extra, $config->getWebroot().'/wp-content'));
         $config->setThemePath(static::extractConfigSetting('themes-path', $extra, $config->getContentPath().'/themes'));
         $config->setPluginPath(static::extractConfigSetting('plugins-path', $extra, $config->getContentPath().'/plugins'));
+        $config->setTablePrefix(static::extractConfigSetting('table-prefix', $extra, 'wp_'));
         
         return $config;
     }
