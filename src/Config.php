@@ -19,6 +19,7 @@ class Config
     private $contentPath;
     private $themePath;
     private $pluginPath;
+    private $muPluginPath;
     private $tablePrefix;
 
     public function getWebroot()
@@ -31,24 +32,19 @@ class Config
         $this->webroot = $webroot;
     }
 
-    public function getThemePath()
-    {
-        return $this->themePath;
-    }
-
     public function getContentPath()
     {
         return $this->contentPath;
     }
 
-    public function getTablePrefix()
-    {
-        return $this->tablePrefix;
-    }
-
     public function setContentPath($path)
     {
         $this->contentPath = $path;
+    }
+
+    public function getThemePath()
+    {
+        return $this->themePath;
     }
 
     public function setThemePath($path)
@@ -66,6 +62,21 @@ class Config
         $this->pluginPath = $path;
     }
 
+    public function getMuPluginPath()
+    {
+        return $this->muPluginPath;
+    }
+
+    public function setMuPluginPath($path)
+    {
+        $this->muPluginPath = $path;
+    }
+    
+    public function getTablePrefix()
+    {
+        return $this->tablePrefix;
+    }
+
     public function setTablePrefix($prefix)
     {
         $this->tablePrefix = $prefix;
@@ -81,6 +92,7 @@ class Config
         $config->setContentPath(static::extractConfigSetting('content-path', $extra, $config->getWebroot().'/wp-content'));
         $config->setThemePath(static::extractConfigSetting('themes-path', $extra, $config->getContentPath().'/themes'));
         $config->setPluginPath(static::extractConfigSetting('plugins-path', $extra, $config->getContentPath().'/plugins'));
+        $config->setMuPluginPath(static::extractConfigSetting('mu-plugins-path', $extra, $config->getContentPath().'/mu-plugins'));
         $config->setTablePrefix(static::extractConfigSetting('table-prefix', $extra, 'wp_'));
         
         return $config;

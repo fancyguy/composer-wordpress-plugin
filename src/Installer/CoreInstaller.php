@@ -87,6 +87,7 @@ class CoreInstaller extends LibraryInstaller
                 'salt_path' => $this->getSaltPath(),
                 'content_dir' => $root.$this->wordpressPlugin->getConfig()->getContentPath(),
                 'plugin_dir' => $root.$this->wordpressPlugin->getConfig()->getPluginPath(),
+                'mu_plugin_dir' => $root.$this->wordpressPlugin->getConfig()->getMuPluginPath(),
             );
             foreach ($paths as $name => $path) {
                 $replacements['{{'.$name.'}}'] = $this->filesystem->findShortestPath(dirname($configPath), $path);

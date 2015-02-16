@@ -21,6 +21,7 @@ use FancyGuy\Composer\WordPress\Repository\WordPressThemeRepository;
 use FancyGuy\Composer\WordPress\Installer\CoreInstaller;
 use FancyGuy\Composer\WordPress\Installer\ThemeInstaller;
 use FancyGuy\Composer\WordPress\Installer\PluginInstaller;
+use FancyGuy\Composer\WordPress\Installer\MuPluginInstaller;
 
 class WordPressPlugin implements PluginInterface
 {
@@ -56,5 +57,6 @@ class WordPressPlugin implements PluginInterface
         $im->addInstaller(new CoreInstaller($io, $composer, $this));
         $im->addInstaller(new ThemeInstaller($io, $composer, $this));
         $im->addInstaller(new PluginInstaller($io, $composer, $this));
+        $im->addInstaller(new MuPluginInstaller($io, $composer, $this));
     }
 }
