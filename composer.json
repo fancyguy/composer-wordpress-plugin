@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "composer-plugin-api": "1.0.0"
+        "composer-plugin-api": "^1.1"
     },
     "autoload": {
         "psr-4": { "FancyGuy\\Composer\\WordPress\\": "src/" }

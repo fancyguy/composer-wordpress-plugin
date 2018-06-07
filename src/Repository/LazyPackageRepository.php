@@ -78,7 +78,7 @@ abstract class LazyPackageRepository extends ComposerRepository
     /**
      * @{inheritDoc}
      */
-    public function whatProvides(Pool $pool, $name)
+    public function whatProvides(Pool $pool, $name, $bypassFilters = false)
     {
         throw new \Exception('Method: '.__METHOD__.' is not implemented.');
     }
