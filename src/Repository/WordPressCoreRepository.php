@@ -26,7 +26,8 @@ class WordPressCoreRepository extends WordPressRepository
 
     protected function getBaseUrl()
     {
-        return 'http://core.svn.wordpress.org';
+        // TODO: Support insecure
+        return 'https://core.svn.wordpress.org';
     }
 
     protected function providesPackage($name)
@@ -54,7 +55,8 @@ class WordPressCoreRepository extends WordPressRepository
         if ('dev-' !== substr($data['version'], 0, 4) && '-dev' !== substr($data['version'], -4)) {
             $data['dist'] = array(
                 'type' => 'zip',
-                'url'  => sprintf('http://wordpress.org/wordpress-%s.zip', $data['version']),
+                // TODO: Support insecure
+                'url'  => sprintf('https://wordpress.org/wordpress-%s.zip', $data['version']),
             );
         }
 
