@@ -54,7 +54,7 @@ abstract class WordPressRepository extends LazyPackageRepository
     /**
      * @{inheritDoc}
      */
-    public function whatProvides(Pool $pool, $name)
+    public function whatProvides(Pool $pool, $name, $bypassFilters = false)
     {
         if (isset($this->packageCache[$name])) {
             return $this->packageCache[$name];
