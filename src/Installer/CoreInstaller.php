@@ -36,7 +36,7 @@ class CoreInstaller extends LibraryInstaller
      */
     public function getInstallPath(PackageInterface $package)
     {
-        return $this->wordpressPlugin->getConfig()->getWebroot();
+        return realpath($this->wordpressPlugin->getConfig()->getWebroot());
     }
 
     /**
@@ -67,10 +67,32 @@ class CoreInstaller extends LibraryInstaller
         $this->createWpConfig();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function removeCode(PackageInterface $package)
+    {
+        parent::removeCode($package);
+        $configPath = $this->getWpConfigPath();
+        if (file_exists($configPath)) {
+            unlink($configPath);
+        }
+        $saltPath = $this->getSaltPath();
+        if (file_exists($saltPath)) {
+            unlink($saltPath);
+        }
+    }
+
+    private function getWpConfigPath()
+    {
+        return realpath(dirname($this->wordpressPlugin->getConfig()->getWebroot())).'/wp-config.php';
+    }
+
     private function createWpConfig()
     {
-        $configPath = realpath(dirname($this->wordpressPlugin->getConfig()->getWebroot())).'/wp-config.php';
+        $configPath = $this->getWpConfigPath();
         if (!file_exists($configPath)) {
+            // TODO: Get this from extras if possible
             $db['name']     = $this->ask('The name of the database for WordPress', 'wordpress');
             $db['user']     = $this->ask('Database username', 'wordpress');
             $db['password'] = $this->ask('Database password', 'wordpress');
@@ -88,12 +110,14 @@ class CoreInstaller extends LibraryInstaller
                 'content_dir' => $root.$this->wordpressPlugin->getConfig()->getContentPath(),
                 'plugin_dir' => $root.$this->wordpressPlugin->getConfig()->getPluginPath(),
                 'mu_plugin_dir' => $root.$this->wordpressPlugin->getConfig()->getMuPluginPath(),
+                'vendor_dir' => ($this->vendorDir ? $this->vendorDir.'/' : ''),
             );
             foreach ($paths as $name => $path) {
                 $replacements['{{'.$name.'}}'] = $this->filesystem->findShortestPath(dirname($configPath), $path);
             }
             $replacements['{{table_prefix}}'] = $this->wordpressPlugin->getConfig()->getTablePrefix();
-            
+
+            // TODO: Allow a replacement template to be configured
             $config = file_get_contents(__DIR__.'/../../res/wp-config.php.template');
             $config = str_replace(array_keys($replacements), array_values($replacements), $config);
             file_put_contents($configPath, $config);
