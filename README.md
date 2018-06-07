@@ -16,9 +16,13 @@ composer global require fancyguy/composer-wordpress-plugin
 
 **WordPressCoreRepository** - This provides the `wordpress/wordpress` package from SVN as a source install and from the API as a dist install.
 
+**WordPressThemeRepository** - This exposes themes on wordpress.org as `wordpress-theme/*` from the SVN for source or the API for dist.
+
 ## Installers
 
 **CoreInstaller** - This installs the `wordpress-core` package, writes `wp-config.php` and generates salts.
+
+**ThemeInstaller** - This installs `wordpress-theme` packages into the configured theme directory.
 
 ## Configuration
 
