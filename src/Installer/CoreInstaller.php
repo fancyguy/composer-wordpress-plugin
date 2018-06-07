@@ -36,7 +36,7 @@ class CoreInstaller extends LibraryInstaller
      */
     public function getInstallPath(PackageInterface $package)
     {
-        return realpath($this->wordpressPlugin->getConfig()->getWebroot());
+        return $this->wordpressPlugin->getConfig()->getWebroot();
     }
 
     /**
