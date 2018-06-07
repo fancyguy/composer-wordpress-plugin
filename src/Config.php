@@ -89,7 +89,7 @@ class Config
         $extra = $package->getExtra();
 
         $config->setWebroot(static::extractConfigSetting('webroot', $extra, 'wordpress'));
-        $config->setContentPath(static::extractConfigSetting('content-path', $extra, $config->getWebroot().'/wp-content'));
+        $config->setContentPath(static::extractConfigSetting('content-path', $extra, 'wp-content'));
         $config->setThemePath(static::extractConfigSetting('themes-path', $extra, $config->getContentPath().'/themes'));
         $config->setPluginPath(static::extractConfigSetting('plugins-path', $extra, $config->getContentPath().'/plugins'));
         $config->setMuPluginPath(static::extractConfigSetting('mu-plugins-path', $extra, $config->getContentPath().'/mu-plugins'));
