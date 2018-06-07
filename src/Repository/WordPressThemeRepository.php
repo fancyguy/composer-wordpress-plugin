@@ -24,7 +24,7 @@ class WordPressThemeRepository extends WordPressRepository
 
     protected function getBaseUrl()
     {
-        return 'http://themes.svn.wordpress.org';
+        return 'https://themes.svn.wordpress.org';
     }
 
     protected function providesPackage($name)
@@ -47,7 +47,12 @@ class WordPressThemeRepository extends WordPressRepository
                                   $this->getPackageShortName($name)
             );
             $cacheFile = $name.'.json';
-            if ($res = $this->cache->read($cacheFile, $this->getModifiedTimestamp($packageUrl))) {
+            try {
+                $lastModified = $this->getModifiedTimestamp($packageUrl);
+            } catch (\Exception $e) {
+                $lastModified = null;
+            }
+            if ($res = $this->cache->read($cacheFile, $lastModified)) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {
                 $versions = array();
@@ -67,9 +72,6 @@ class WordPressThemeRepository extends WordPressRepository
         return $this->infoCache[$name];
     }
 
-    /**
-     * @TODO scan the first few lines of the styles.css to get the remaining metadata
-     */
     protected function getComposerMetadata($name, $version)
     {
         $url = sprintf('%s/%s/%s',
