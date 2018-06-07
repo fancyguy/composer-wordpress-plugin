@@ -26,7 +26,7 @@ class WordPressPluginRepository extends WordPressRepository
 
     protected function getBaseUrl()
     {
-        return 'http://plugins.svn.wordpress.org';
+        return 'https://plugins.svn.wordpress.org';
     }
 
     protected function providesPackage($name)
@@ -46,7 +46,12 @@ class WordPressPluginRepository extends WordPressRepository
         if (!isset($this->infoCache[$name])) {
             $cacheFile = $name.'.json';
             $packageUrl = $this->getBaseUrl().'/'.$this->getPackageShortName($name);
-            if ($res = $this->cache->read($cacheFile, $this->getModifiedTimestamp($packageUrl))) {
+            try {
+                $lastModified = $this->getModifiedTimestamp($packageUrl);
+            } catch (\Exception $e) {
+                $lastModified = null;
+            }
+            if ($res = $this->cache->read($cacheFile, $lastModified)) {
                 $this->infoCache[$name] = json_decode($res, true);
             } else {
                 $this->infoCache[$name] = $this->loadVersions($this->getDriver($packageUrl), $name);
@@ -69,7 +74,7 @@ class WordPressPluginRepository extends WordPressRepository
                                   $data['version']),
             );
         }
-        
+
         //        $headers = $this->extractHeaderFields($url.'/style.css');
         //        $metadata = array_merge($metadata, $this->translateStandardHeaders($headers));
 
