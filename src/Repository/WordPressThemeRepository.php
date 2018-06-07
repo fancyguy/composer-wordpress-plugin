@@ -72,9 +72,6 @@ class WordPressThemeRepository extends WordPressRepository
         return $this->infoCache[$name];
     }
 
-    /**
-     * @TODO scan the first few lines of the styles.css to get the remaining metadata
-     */
     protected function getComposerMetadata($name, $version)
     {
         $url = sprintf('%s/%s/%s',
