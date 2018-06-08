@@ -56,7 +56,7 @@ class WordPressCoreRepository extends WordPressRepository
             $data['dist'] = array(
                 'type' => 'zip',
                 // TODO: Support insecure
-                'url'  => sprintf('https://wordpress.org/wordpress-%s.zip', $data['version']),
+                'url'  => sprintf('https://wordpress.org/wordpress-%s-no-content.zip', $data['version']),
             );
         }
 
